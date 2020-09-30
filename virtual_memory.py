@@ -1,6 +1,12 @@
+# fifo_answers = 0
+# lru_answers = 0
+# opt_answers = 0
+# second_type_answers = [fifo_answers, lru_answers, opt_answers]
+
+
 with open('RAM_frames.txt') as file:
     M = int(file.readline())
-    RAM = [0]*M
+    RAM = [-1]*M
 
 
 def is_element_loaded(element):
@@ -22,8 +28,24 @@ with open('page_references.txt') as file:
         addres_space.append(int(number))
 
 
-for i in range(M):
-    load_page(addres_space[i], i)
+def fifo(fifo_answers=0):
+    used_frames = 0
+    vacant_frame = 0
+    for i in range(N):
+        if used_frames < M:
+            if is_element_loaded(addres_space[i]) == 'NO':
+                load_page(addres_space[i], vacant_frame)
+                used_frames += 1
+                vacant_frame += 1
+                fifo_answers += 1
+        else:
+            if is_element_loaded(addres_space[i]) == 'NO':
+                del RAM[0]
+                RAM.insert(M-1, addres_space[i])
+                fifo_answers += 1
+    return fifo_answers
 
 
+print(fifo())
 print(RAM)
+
